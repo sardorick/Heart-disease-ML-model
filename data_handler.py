@@ -100,7 +100,7 @@ classifiers = {
     "Decision Tree": DecisionTreeClassifier(random_state=0),
     "Random Forest": RandomForestClassifier(random_state=0, n_estimators=100),
     "Ada Boost": AdaBoostClassifier(random_state=0, n_estimators=100),
-    "Extra Trees": ExtraTreesClassifier(max_depth=6, min_samples_split=4, n_estimators=500, random_state=42),
+    "Extra Trees": ExtraTreesClassifier(max_depth=6, min_samples_split=4, n_estimators=500, random_state=42), # improved 1% by GridsearchCV
     "Gradient Boosting": GradientBoostingClassifier(random_state=0, n_estimators=100),
     "XGBoost": XGBClassifier(),
     "LightGBM": LGBMClassifier(random_state=0, n_estimators=100),
