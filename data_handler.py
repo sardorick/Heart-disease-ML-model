@@ -23,27 +23,15 @@ np.random.seed(0)
 
 
 
-data = pd.read_csv(r'data\heart.csv') 
+data = pd.read_csv(r'data\heart.csv')
+data = data.drop(['chol', 'fbs'], axis=1) # dropping 'chol' and 'fbs' doesn't do any performance improvement
+# but dropping 'restecg' does. 
 
-# (data.corr()['output'].sort_values().plot.barh())
-# (data.corr()['output'].abs().sort_values().plot.barh())
-# plt.show()
-"""
-exng       -0.436757
-oldpeak    -0.430696
-caa        -0.391724
-thall      -0.344029
-sex        -0.280937
-age        -0.225439
-trtbps     -0.144931
-chol       -0.085239
-fbs        -0.028046
-restecg     0.137230
-slp         0.345877
-thalachh    0.421741
-cp          0.433798
-output      1.000000
-"""
+# creating a new feature - rate of resting blood pressure relative to maximum heart rate achieved
+# data['pressure_heart'] = data['trtbps'] / data['thalachh'] 
+
+# data['pressure_heart'] = data['thalachh'] / data['trtbps'] #adding this decreases the accuracy
+
 
 # Build a data enhancer
 
@@ -53,22 +41,23 @@ def data_enhance(data):
         sex_data = org_data[org_data['sex']==sex]
         age_std = sex_data['age'].std()
         trtbps_std = sex_data['trtbps'].std()
-        chol_std = sex_data['chol'].std()
+        # chol_std = sex_data['chol'].std()
         thalachh_std = sex_data['thalachh'].std()
         oldpeak_std = sex_data['oldpeak'].std()
         for i in org_data[org_data['sex']==sex].index:
             if np.random.randint(2) == 1:
                 org_data['age'].values[i] += age_std/10
                 org_data['trtbps'].values[i] += trtbps_std/10
-                org_data['chol'].values[i] += chol_std/10
+                # org_data['chol'].values[i] += chol_std/10
                 org_data['thalachh'].values[i] += thalachh_std/10
                 org_data['oldpeak'].values[i] += oldpeak_std/10
             else:
                 org_data['age'].values[i] -= age_std/10
                 org_data['trtbps'].values[i] -= trtbps_std/10
-                org_data['chol'].values[i] -= chol_std/10
+                # org_data['chol'].values[i] -= chol_std/10
                 org_data['thalachh'].values[i] -= thalachh_std/10
                 org_data['oldpeak'].values[i] -= oldpeak_std/10
+
 
     return org_data
 
@@ -76,8 +65,8 @@ gen = data_enhance(data)
 x = data.drop(['output'], axis=1) # features - train and val data
 y = data['output'] # target
 
-num_vals = ['age', 'trtbps','thalachh', 'chol', 'oldpeak']
-cat_vals = ['sex', 'cp', 'exng', 'slp', 'caa', 'thall', 'restecg', 'fbs']
+num_vals = ['age', 'trtbps','thalachh', 'oldpeak'] 
+cat_vals = ['sex', 'cp', 'exng', 'slp', 'caa', 'thall', 'restecg'] 
 x_train, x_val, y_train, y_val = train_test_split(x, y, test_size=0.2, random_state=0)
 
 # Add enhanced data to 20% of the orig data
@@ -100,7 +89,7 @@ classifiers = {
     "Decision Tree": DecisionTreeClassifier(random_state=0),
     "Random Forest": RandomForestClassifier(random_state=0, n_estimators=100),
     "Ada Boost": AdaBoostClassifier(random_state=0, n_estimators=100),
-    "Extra Trees": ExtraTreesClassifier(max_depth=6, min_samples_split=4, n_estimators=500, random_state=42), # improved 1% by GridsearchCV
+    "Extra Trees": ExtraTreesClassifier(max_depth=9, min_samples_split=4, n_estimators=500, random_state=42), # improved 1% by GridsearchCV
     "Gradient Boosting": GradientBoostingClassifier(random_state=0, n_estimators=100),
     "XGBoost": XGBClassifier(),
     "LightGBM": LGBMClassifier(random_state=0, n_estimators=100),
@@ -175,13 +164,13 @@ print(results_order)
 # With GridSearchCV
 """
                  Model  Accuracy Score  Balanced Accuracy score      Time
-0          Extra Trees       91.803279                91.503268  0.496867
-1        Random Forest       88.524590                88.180828  0.153476
-2             Catboost       88.524590                88.180828  0.625599
-3            Ada Boost       86.885246                87.091503  0.190114
-4    Gradient Boosting       86.885246                87.091503  0.114697
-5              XGBoost       86.885246                87.472767  0.186505
-6  Logistic Regression       86.885246                86.328976  0.150109
-7        Decision Tree       85.245902                84.858388  0.012997
-8             LightGBM       85.245902                85.239651  0.130673
+0          Extra Trees       93.442623                93.355120  0.541791
+1        Random Forest       88.524590                88.180828  0.168255
+2             Catboost       88.524590                88.180828  0.437876
+3            Ada Boost       86.885246                87.091503  0.197509
+4    Gradient Boosting       86.885246                87.091503  0.086766
+5              XGBoost       86.885246                87.472767  0.133575
+6  Logistic Regression       86.885246                86.328976  0.073803
+7        Decision Tree       85.245902                84.858388  0.025932
+8             LightGBM       85.245902                85.239651  0.093745
 """
