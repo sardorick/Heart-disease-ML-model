@@ -1,4 +1,5 @@
 from email import header
+from operator import index
 import numpy as np
 import pandas as pd
 from sklearn.compose import ColumnTransformer
@@ -143,7 +144,7 @@ joblib.dump(best_model, 'model.pkl')
 
 # create test data
 
-df = data.iloc[68:75]
+df = data.sample(n=6)
 df = df.drop('output', axis=1)
 df.to_csv('test.csv')
 
