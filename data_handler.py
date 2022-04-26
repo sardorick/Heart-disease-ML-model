@@ -1,3 +1,4 @@
+from email import header
 import numpy as np
 import pandas as pd
 from sklearn.compose import ColumnTransformer
@@ -123,27 +124,22 @@ for model_name, model in classifiers.items():
 
 results_order = results.sort_values(by=['Accuracy Score'], ascending=False, ignore_index=True)
 
-print(results_order)
+# print(results_order)
 
+def trainer():
+    best_model = classifiers.get("Extra Trees")
+    best_model.fit(x_train, y_train)
+    return best_model
 
-# def predictor(features):
+def predictor(features):
+    preds = trainer().predict(features)
+    return preds
 
-#     best_model = classifiers.get("Extra Trees")
-<<<<<<< Updated upstream
+# create test data
 
-#     best_model.fit(x_train, y_train)
-
-#     preds = best_model.predict(features)
-#     return preds
-=======
-
-#     best_model.fit(x_train, y_train)
-
-#     preds = best_model.predict(features)
-#     return preds
-
-
->>>>>>> Stashed changes
+df = data.iloc[68:75]
+df = df.drop('output', axis=1)
+df.to_csv('test.csv', header=None)
 
 # Benchmark
 """
@@ -186,3 +182,4 @@ print(results_order)
 7        Decision Tree       85.245902                84.858388  0.025932
 8             LightGBM       85.245902                85.239651  0.093745
 """
+# use joblib to save the best model and divide the predict function into two
