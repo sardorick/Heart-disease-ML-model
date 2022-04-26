@@ -62,6 +62,7 @@ def data_enhance(data):
     return org_data
 
 gen = data_enhance(data)
+gen = gen.sample(frac=1)
 x = data.drop(['output'], axis=1) # features - train and val data
 y = data['output'] # target
 
@@ -71,8 +72,9 @@ x_train, x_val, y_train, y_val = train_test_split(x, y, test_size=0.2, random_st
 
 # Add enhanced data to 20% of the orig data
 enhanced_sample = gen.sample(gen.shape[0] // 5)
-x_train = pd.concat([x_train, enhanced_sample.drop(['output'], axis=1 ) ])
-y_train = pd.concat([y_train, enhanced_sample['output'] ])
+x_train_enh = pd.concat([x_train, enhanced_sample.drop(['output'], axis=1 ) ])
+y_train_enh = pd.concat([y_train, enhanced_sample['output'] ])
+print(f'Augmented percenteage {((len(x_train_enh) - len(x_train)) / len(x_train)) * 100} %')
 
 
 num_pipeline = Pipeline([
@@ -107,7 +109,7 @@ results = pd.DataFrame({'Model': [], "Accuracy Score": [], "Balanced Accuracy sc
 for model_name, model in classifiers.items():
     start_time = time.time()
 
-    model.fit(x_train, y_train)
+    model.fit(x_train_enh, y_train_enh)
 
     predics = model.predict(x_val)
     total_time = time.time() - start_time
@@ -127,11 +129,21 @@ print(results_order)
 # def predictor(features):
 
 #     best_model = classifiers.get("Extra Trees")
+<<<<<<< Updated upstream
 
 #     best_model.fit(x_train, y_train)
 
 #     preds = best_model.predict(features)
 #     return preds
+=======
+
+#     best_model.fit(x_train, y_train)
+
+#     preds = best_model.predict(features)
+#     return preds
+
+
+>>>>>>> Stashed changes
 
 # Benchmark
 """
