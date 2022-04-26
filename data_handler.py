@@ -18,6 +18,8 @@ from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
 from catboost import CatBoostClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import GridSearchCV
+np.random.seed(0)
 
 
 
@@ -130,16 +132,32 @@ for model_name, model in classifiers.items():
 
 results_order = results.sort_values(by=['Accuracy Score'], ascending=False, ignore_index=True)
 
-print(results_order)
+# print(results_order)
 
-def predictor(features):
+hyper_params = {
+    "n_estimators": [100, 200, 500],
+    "random_state": [0, 42, 100],
+    "min_samples_split": [2, 3, 4]
+}
 
-    best_model = classifiers.get("Extra Trees")
+clf = ExtraTreesClassifier()
 
-    best_model.fit(x_train, y_train)
+GS = GridSearchCV(estimator=clf, param_grid=hyper_params, scoring = 'accuracy', cv=5, refit='accuracy')
 
-    preds = best_model.predict(features)
-    return preds
+GS.fit(x_train, y_train)
+# print(GS.best_estimator_)
+# print(GS.best_params_)
+scores = GS.best_params_
+print(scores)
+
+# def predictor(features):
+
+#     best_model = classifiers.get("Extra Trees")
+
+#     best_model.fit(x_train, y_train)
+
+#     preds = best_model.predict(features)
+#     return preds
 
 # Benchmark
 """
@@ -158,13 +176,13 @@ def predictor(features):
 # STD
 """
                  Model  Accuracy Score  Balanced Accuracy score      Time
-0            Ada Boost       91.803279                92.265795  0.133611
-1        Random Forest       88.524590                88.943355  0.129669
-2          Extra Trees       88.524590                88.562092  0.109739
-3             Catboost       88.524590                88.562092  0.451954
-4             LightGBM       86.885246                87.091503  0.091729
-5    Gradient Boosting       85.245902                85.620915  0.090088
-6              XGBoost       85.245902                85.239651  0.131679
-7  Logistic Regression       83.606557                83.006536  0.047480
-8        Decision Tree       80.327869                80.827887  0.012487
+0          Extra Trees       90.163934                89.651416  0.146654
+1        Random Forest       88.524590                88.180828  0.162445
+2             Catboost       88.524590                88.180828  0.670215
+3            Ada Boost       86.885246                87.091503  0.181450
+4    Gradient Boosting       86.885246                87.091503  0.094347
+5              XGBoost       86.885246                87.472767  0.209441
+6  Logistic Regression       86.885246                86.328976  0.115691
+7        Decision Tree       85.245902                84.858388  0.011972
+8             LightGBM       85.245902                85.239651  0.111703
 """

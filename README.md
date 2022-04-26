@@ -8,4 +8,8 @@ Sardorbek:
 
 Kingsley: 
 1. Do EDA for the data and see what kind of trends are there.
-2. 
+2. Work on the powerpoint presentation for data structures
+
+
+Lara:
+1. Work on the CLI file
