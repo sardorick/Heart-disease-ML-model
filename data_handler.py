@@ -100,7 +100,7 @@ classifiers = {
     "Decision Tree": DecisionTreeClassifier(random_state=0),
     "Random Forest": RandomForestClassifier(random_state=0, n_estimators=100),
     "Ada Boost": AdaBoostClassifier(random_state=0, n_estimators=100),
-    "Extra Trees": ExtraTreesClassifier(random_state=0, n_estimators=100),
+    "Extra Trees": ExtraTreesClassifier(max_depth=6, min_samples_split=4, n_estimators=500, random_state=42),
     "Gradient Boosting": GradientBoostingClassifier(random_state=0, n_estimators=100),
     "XGBoost": XGBClassifier(),
     "LightGBM": LGBMClassifier(random_state=0, n_estimators=100),
@@ -132,23 +132,8 @@ for model_name, model in classifiers.items():
 
 results_order = results.sort_values(by=['Accuracy Score'], ascending=False, ignore_index=True)
 
-# print(results_order)
+print(results_order)
 
-hyper_params = {
-    "n_estimators": [100, 200, 500],
-    "random_state": [0, 42, 100],
-    "min_samples_split": [2, 3, 4]
-}
-
-clf = ExtraTreesClassifier()
-
-GS = GridSearchCV(estimator=clf, param_grid=hyper_params, scoring = 'accuracy', cv=5, refit='accuracy')
-
-GS.fit(x_train, y_train)
-# print(GS.best_estimator_)
-# print(GS.best_params_)
-scores = GS.best_params_
-print(scores)
 
 # def predictor(features):
 
@@ -185,4 +170,18 @@ print(scores)
 6  Logistic Regression       86.885246                86.328976  0.115691
 7        Decision Tree       85.245902                84.858388  0.011972
 8             LightGBM       85.245902                85.239651  0.111703
+"""
+
+# With GridSearchCV
+"""
+                 Model  Accuracy Score  Balanced Accuracy score      Time
+0          Extra Trees       91.803279                91.503268  0.496867
+1        Random Forest       88.524590                88.180828  0.153476
+2             Catboost       88.524590                88.180828  0.625599
+3            Ada Boost       86.885246                87.091503  0.190114
+4    Gradient Boosting       86.885246                87.091503  0.114697
+5              XGBoost       86.885246                87.472767  0.186505
+6  Logistic Regression       86.885246                86.328976  0.150109
+7        Decision Tree       85.245902                84.858388  0.012997
+8             LightGBM       85.245902                85.239651  0.130673
 """
