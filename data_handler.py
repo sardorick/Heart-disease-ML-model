@@ -125,15 +125,20 @@ for model_name, model in classifiers.items():
 results_order = results.sort_values(by=['Accuracy Score'], ascending=False, ignore_index=True)
 
 # print(results_order)
-
+from joblib import Memory
 def trainer():
     best_model = classifiers.get("Extra Trees")
     best_model.fit(x_train, y_train)
     return best_model
-
+location = 'C:\Users\Lenovo\OneDrive\Documents\Strive repos\Heart-disease-ML-model'
 def predictor(features):
     preds = trainer().predict(features)
     return preds
+
+
+funct = Memory(location=location)
+funct.cache(predictor)
+# store this function in joblib and import
 
 # create test data
 
