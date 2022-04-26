@@ -24,7 +24,7 @@ np.random.seed(0)
 
 
 data = pd.read_csv(r'data\heart.csv')
-data = data.drop(['chol', 'fbs'], axis=1) # dropping 'chol' and 'fbs' doesn't do any performance improvement
+data = data.drop(['chol', 'fbs'], axis=1) # dropping 'chol' and 'fbs' doesn't do any performance improvement and doesn't decrease performance.
 # but dropping 'restecg' does. 
 
 # creating a new feature - rate of resting blood pressure relative to maximum heart rate achieved
