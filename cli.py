@@ -29,9 +29,17 @@ if __name__ == "__main__":
     parser.add_argument('caa', type=int, choices=[0, 1, 2, 3] , help='number of major vessels (0-3)')
     parser.add_argument('thall', type=int, choices=[0, 1, 2, 3] , help='Thall rate, between 0 and 3')
     args = parser.parse_args()
+    print(args)
     
-    args_list = [args.age, args.sex, args.cp, args.trtbps, args.chol, args.fbs, args.restecg, args.thalachh, args.exng, args.oldpeak, 
-                args.slp, args.caa, args.thall]
-    args_list = np.array(args_list)
-    args_list = args_list.reshape((1, -1))
-    
+    # args_list = [args.age, args.sex, args.cp, args.trtbps, args.chol, args.fbs, args.restecg, args.thalachh, args.exng, args.oldpeak, 
+    #             args.slp, args.caa, args.thall]
+    # args_list = np.array(args_list)
+    # args_list = args_list.reshape((1, -1))
+def predictor(features):
+
+    best_model = classifiers.get("Extra Trees")
+
+    best_model.fit(x_train, y_train)
+
+    preds = best_model.predict(features)
+    return preds   
