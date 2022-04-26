@@ -4,8 +4,7 @@ import argparse
 import pandas as pd 
 from sklearn.ensemble import ExtraTreesClassifier
 import numpy as np
-
-model = ExtraTreesClassifier()
+from data_handler import predictor, x_train, y_train, x_val, y_val
 
  
 df = pd.read_csv('heart.csv')
