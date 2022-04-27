@@ -12,7 +12,7 @@ model = joblib.load('model.pkl')
 
 parser = argparse.ArgumentParser(description= 'Heart attack predictor')
 
-parser.add_argument('test_data', type=str, help='input data')
+parser.add_argument('test_data', type=str, help='Input path to test data')
 
 args = parser.parse_args()
 
