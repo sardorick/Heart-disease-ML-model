@@ -1,38 +1,43 @@
+import requests
+import json
 import argparse
-import joblib
-import pandas as pd
+import pandas as pd 
+from sklearn.ensemble import ExtraTreesClassifier
 import numpy as np
+from data_handler import predictor
+
+model = ExtraTreesClassifier()
 
  
-# test_df = pd.read_csv('test.csv')
+#df = pd.read_csv('heart.csv')
+if __name__ == "__main__":
+    
+    parser = argparse.ArgumentParser(description= 'Heart attack predictor')
 
+    parser.add_argument('test.csv', type=str, help='C:\Users\omolara\Documents\strive school\Heart-disease-ML-model\test.csv')
+    # parser.add_argument('sex', type=int, choices=[0, 1] , help='Male = 1, Female = 0')
+    # parser.add_argument('cp', type=int, choices=[1, 2, 3, 4] , help='Chest Pain type , between 1 and 4')
 
-# Loading model
-model = joblib.load('model.pkl')
+    # parser.add_argument('trtbps', type=int, help='resting blood pressure (in mm Hg)')
+    # parser.add_argument('chol', type=int, help='cholestoral in mg/dl fetched via BMI sensor')
+    # parser.add_argument('fbs', type=int, choices=[0, 1] , help='fasting blood sugar > 120 mg/dl) (1 = true; 0 = false')
 
-parser = argparse.ArgumentParser(description= 'Heart attack predictor')
+    # parser.add_argument('restecg', type=int, choices=[0, 1, 2] , help='resting electrocardiographic results, between 0 and 2')
+    # parser.add_argument('thalachh', type=int, help='maximum heart rate achieved')
+    # parser.add_argument('exng', type=int, choices=[0, 1] , help='exercise induced angina (1 = yes; 0 = no)')
 
-parser.add_argument('test_data', type=str, help='Insert a path for the input data')
-
-args = parser.parse_args()
-
-test_data_link = args.test_data
-
-# data
-input_data = pd.read_csv(test_data_link)
-column_names = input_data.columns
-
-# Predictions
-for _, sample in input_data.iterrows():
-    x = pd.DataFrame([sample])
-
-    print(x.to_string(), '\n')
-
-    preds = model.predict(x)[0]
-    if preds == 1:
-        print("You have heart attack probability")
-    else:
-        print("Your heart is healthy")
-    print('-'*100, '\n\n')
-
-
+    # parser.add_argument('oldpeak', type=float, help='previous peak')
+    # parser.add_argument('slp', type=int, choices=[0, 1, 2] , help='slope, between 0 and 2')
+    # parser.add_argument('caa', type=int, choices=[0, 1, 2, 3] , help='number of major vessels (0-3)')
+    # parser.add_argument('thall', type=int, choices=[0, 1, 2, 3] , help='Thall rate, between 0 and 3')
+    # args = parser.parse_args()
+    
+    # args_list = [args.age, args.sex, args.cp, args.trtbps, args.chol, args.fbs, args.restecg, args.thalachh, args.exng, args.oldpeak, 
+    #             args.slp, args.caa, args.thall]
+    # args_list = np.array(args_list)
+    # args_list = args_list.reshape((1, -1))
+    args = parser.parse_args()
+    #print(args)
+    path = args.file
+    pred = predictor(path)
+    print(pred)
